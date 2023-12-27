@@ -2,92 +2,117 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Classmate Contact Form</title>
-    <link rel="stylesheet" href="style.css">
-    <!-- Replace the following script with your Firebase configuration -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
-    <script>
-        var firebaseConfig = {
-            apiKey: "AIzaSyAVQr6a12HlJLYwjfMk0a1UVsChz8tNhVg",
-            authDomain: "form-77c95.firebaseapp.com",
-            projectId: "form-77c95",
-            storageBucket: "form-77c95.appspot.com",
-            messagingSenderId: "390260686541",
-            appId: "1:390260686541:web:3182497da0259426777384",
-            measurementId: "G-54XPFNS7Z4"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        var db = firebase.firestore();
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classmate Contact Form</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Replace the following script with your Firebase configuration -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <style>
+    /* Updated style for the notification */
+    #notification {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      z-index: 1000;
+    }
+  </style>
 </head>
 
 <body>
-    <h1>X Classmate Contact Form</h1>
-    <p>This is PIYUSH PAWAR of your class</p>
-    <form id="contactForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" required>
+  <h1>X Classmate Contact Form</h1>
+  <p>This is PIYUSH PAWAR of your class</p>
+  <!-- Notification div -->
+  <div id="notification">
+    Thank you for submission! I will reach out to you shortly.
+  </div>
+  <form id="contactForm">
+    <label for="name">Name:</label>
+    <input type="text" id="name" required>
 
-        <div>
-            <label>Section:</label>
-            <input type="radio" id="A" name="section" value="A">
-            <label for="A">A</label>
-            <input type="radio" id="B" name="section" value="B">
-            <label for="B">B</label>
-        </div>
+    <div>
+      <label>Section:</label>
+      <input type="radio" id="A" name="section" value="A">
+      <label for="A">A</label>
+      <input type="radio" id="B" name="section" value="B">
+      <label for="B">B</label>
+    </div>
 
-        <div>
-            <label for="contact">Contact:</label>
-            <input type="text" id="contact">
-        </div>
+    <div>
+      <label for="contact">Contact:</label>
+      <input type="text" id="contact">
+    </div>
 
-        <div>
-            <label for="dob">Date of birth:</label>
-            <input type="date" id="dob" required>
-        </div>
+    <div>
+      <label for="dob">Date of birth:</label>
+      <input type="date" id="dob" required>
+    </div>
 
-        <label for="message">Message:</label>
-        <textarea id="message" placeholder="Leave a message for me"></textarea>
+    <label for="message">Message:</label>
+    <textarea id="message" placeholder="Leave a message for me"></textarea>
 
-        <div>
-            <button type="submit">Submit</button>
-        </div>
-    </form>
+    <div>
+      <button type="submit">Submit</button>
+    </div>
+  </form>
 
-    <script>
-        var contactForm = document.getElementById('contactForm');
+  <script>
+    // Firebase configuration
+    var firebaseConfig = {
+      apiKey: "AIzaSyAVQr6a12HlJLYwjfMk0a1UVsChz8tNhVg",
+      authDomain: "form-77c95.firebaseapp.com",
+      projectId: "form-77c95",
+      storageBucket: "form-77c95.appspot.com",
+      messagingSenderId: "390260686541",
+      appId: "1:390260686541:web:3182497da0259426777384",
+      measurementId: "G-54XPFNS7Z4"
+    };
 
-        contactForm.addEventListener('submit', function (event) {
-            event.preventDefault();
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    var db = firebase.firestore();
 
-            var name = document.getElementById('name').value;
-            var section = document.querySelector('input[name="section"]:checked').value;
-            var contact = document.getElementById('contact').value;
-            var dob = document.getElementById('dob').value;
-            var message = document.getElementById('message').value;
+    var contactForm = document.getElementById('contactForm');
+    var notification = document.getElementById('notification');
 
-            db.collection('contacts').add({
-                name: name,
-                section: section,
-                contact: contact,
-                dob: dob,
-                message: message
-            })
-                .then(function (docRef) {
-                    console.log('Document written with ID: ', docRef.id);
-                    // You can redirect the user or show a success message here
-                })
-                .catch(function (error) {
-                    console.error('Error adding document: ', error);
-                    // Handle errors here
-                });
+    contactForm.addEventListener('submit', function (event) {
+      event.preventDefault();
+
+      var name = document.getElementById('name').value;
+      var section = document.querySelector('input[name="section"]:checked').value;
+      var contact = document.getElementById('contact').value;
+      var dob = document.getElementById('dob').value;
+      var message = document.getElementById('message').value;
+
+      db.collection('contacts').add({
+        name: name,
+        section: section,
+        contact: contact,
+        dob: dob,
+        message: message
+      })
+        .then(function (docRef) {
+          console.log('Document written with ID: ', docRef.id);
+
+          // Show the notification
+          notification.style.display = 'block';
+
+          // Optionally, clear the form fields after submission
+          contactForm.reset();
+        })
+        .catch(function (error) {
+          console.error('Error adding document: ', error);
+          // Handle errors here
         });
-    </script>
+    });
+  </script>
 </body>
 
 </html>
